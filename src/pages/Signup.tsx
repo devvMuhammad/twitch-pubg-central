@@ -6,8 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -21,6 +22,8 @@ const formSchema = z.object({
 
 const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,9 +42,23 @@ const Signup = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       console.log("Form submitted:", values);
-      // Here you would typically send the data to your backend
+      
+      toast({
+        title: "Account created!",
+        description: "Let's set up your profile now.",
+      });
+      
+      // Redirect to onboarding after successful signup
+      setTimeout(() => {
+        navigate("/onboarding");
+      }, 1000);
     } catch (error) {
       console.error("Signup failed:", error);
+      toast({
+        title: "Something went wrong",
+        description: "There was a problem creating your account.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
