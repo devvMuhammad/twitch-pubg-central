@@ -50,7 +50,7 @@ const FeaturesSection = () => {
               <div className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gaming-darker">
                 {feature.icon}
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white group-hover:text-twitch transition-colors">
+              <h3 className="text-xl font-semibold mb-2 text-white group-hover:text-pubg transition-colors">
                 {feature.title}
               </h3>
               <p className="text-gray-400">

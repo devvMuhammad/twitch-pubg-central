@@ -11,13 +11,13 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 263 54% 80%;
+    --primary: 35 100% 47%;    /* PUBG Orange */
     --primary-foreground: 240 5.9% 10%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 39 100% 50%;
+    --accent: 263 54% 80%;     /* Purple accent */
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
@@ -39,19 +39,19 @@
 
 @layer components {
   .hero-text-glow {
-    text-shadow: 0 0 30px rgba(145, 70, 255, 0.5);
+    text-shadow: 0 0 30px rgba(242, 169, 0, 0.5);
   }
   
   .feature-card {
-    @apply bg-gaming-light border border-twitch/20 rounded-xl p-6 shadow-lg transition-transform hover:shadow-twitch/20 hover:-translate-y-1;
+    @apply bg-gaming-light border border-pubg/20 rounded-xl p-6 shadow-lg transition-transform hover:shadow-pubg/20 hover:-translate-y-1;
   }
   
   .glow-button {
-    @apply relative overflow-hidden bg-twitch text-white rounded-md px-6 py-2 transition-all;
+    @apply relative overflow-hidden bg-pubg text-white rounded-md px-6 py-2 transition-all;
   }
   
   .glow-button::after {
-    @apply content-[''] absolute inset-0 -z-10 bg-gradient-to-r from-twitch-dark via-twitch to-twitch-light opacity-0 blur-xl transition-opacity duration-500;
+    @apply content-[''] absolute inset-0 -z-10 bg-gradient-to-r from-pubg-dark via-pubg to-pubg-light opacity-0 blur-xl transition-opacity duration-500;
   }
   
   .glow-button:hover::after {

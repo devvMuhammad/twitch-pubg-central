@@ -23,7 +23,7 @@ const CallToAction = () => {
               Create your free account now and become part of the fastest-growing PUBG community platform.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <Button className="glow-button bg-twitch hover:bg-twitch-dark text-white w-full sm:w-auto text-lg px-8 py-6">
+              <Button className="glow-button bg-pubg hover:bg-pubg-dark text-white w-full sm:w-auto text-lg px-8 py-6">
                 Register Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>

@@ -50,11 +50,11 @@ const TestimonialsSection = () => {
       </div>
       
       <div className="relative h-64 flex items-center justify-center">
-        <div className="bg-gaming-light p-6 rounded-lg shadow-lg border border-twitch/20 relative z-10">
-          <Quote className="text-twitch h-8 w-8 mb-2 opacity-40" />
+        <div className="bg-gaming-light p-6 rounded-lg shadow-lg border border-pubg/20 relative z-10">
+          <Quote className="text-pubg h-8 w-8 mb-2 opacity-40" />
           <p className="text-white text-lg mb-4">{testimonials[currentIndex].quote}</p>
           <div className="flex items-center">
-            <div className="bg-twitch rounded-full p-2 mr-3">
+            <div className="bg-pubg rounded-full p-2 mr-3">
               <User className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -69,7 +69,7 @@ const TestimonialsSection = () => {
         {testimonials.map((_, index) => (
           <button 
             key={index} 
-            className={`h-2 w-2 rounded-full ${index === currentIndex ? 'bg-twitch' : 'bg-gray-600'}`}
+            className={`h-2 w-2 rounded-full ${index === currentIndex ? 'bg-pubg' : 'bg-gray-600'}`}
             onClick={() => setCurrentIndex(index)}
           />
         ))}
