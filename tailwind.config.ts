@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,6 +53,21 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				twitch: {
+					DEFAULT: '#9146FF',
+					light: '#A970FF',
+					dark: '#772CE8',
+				},
+				pubg: {
+					DEFAULT: '#F2A900',
+					light: '#FFD166',
+					dark: '#E67E22',
+				},
+				gaming: {
+					dark: '#18181B',
+					darker: '#0E0E10',
+					light: '#1F1F23',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -84,11 +100,35 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-glow': {
+					'0%, 100%': {
+						opacity: '1',
+						transform: 'scale(1)',
+					},
+					'50%': {
+						opacity: '0.8',
+						transform: 'scale(1.05)',
+					},
+				},
+				'float': {
+					'0%, 100%': {
+						transform: 'translateY(0)',
+					},
+					'50%': {
+						transform: 'translateY(-10px)',
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite',
+			},
+			backgroundImage: {
+				'gaming-gradient': 'linear-gradient(to right, rgba(17, 24, 39, 0.8), rgba(9, 9, 121, 0.5))',
+				'hero-pattern': "url('/public/hero-bg.svg')"
 			}
 		}
 	},
