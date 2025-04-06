@@ -6,7 +6,10 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Globe, Users, User, Monitor, Gamepad2, Smartphone, Trophy, Clock, Timer } from "lucide-react";
+import { 
+  Globe, Users, User, Monitor, Gamepad2, Smartphone, 
+  Trophy, Clock, Timer, CircleDot
+} from "lucide-react";
 
 const Lobby = () => {
   const [activeTab, setActiveTab] = useState("open");
@@ -138,6 +141,35 @@ const Lobby = () => {
     }
   };
 
+  // Get status indicator component
+  const getStatusIndicator = (type: string) => {
+    switch (type) {
+      case 'open':
+        return (
+          <div className="flex items-center gap-1">
+            <CircleDot className="h-3 w-3 text-yellow-400 fill-yellow-400" />
+            <span className="text-xs text-yellow-400 font-medium">Recruiting</span>
+          </div>
+        );
+      case 'ongoing':
+        return (
+          <div className="flex items-center gap-1">
+            <CircleDot className="h-3 w-3 text-green-400 fill-green-400" />
+            <span className="text-xs text-green-400 font-medium">Live</span>
+          </div>
+        );
+      case 'completed':
+        return (
+          <div className="flex items-center gap-1">
+            <CircleDot className="h-3 w-3 text-red-400 fill-red-400" />
+            <span className="text-xs text-red-400 font-medium">Completed</span>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   // Match card component
   const MatchCard = ({ match, type }: { match: any, type: string }) => {
     return (
@@ -146,9 +178,7 @@ const Lobby = () => {
           <CardHeader className="pb-0 pt-3 px-4">
             <div className="flex justify-between items-start">
               <CardTitle className="text-base text-white">{match.name}</CardTitle>
-              <Badge variant={type === 'open' ? 'default' : type === 'ongoing' ? 'secondary' : 'outline'} className={`text-xs ${type === 'open' ? 'bg-pubg' : type === 'ongoing' ? 'bg-accent' : 'border-pubg text-pubg'}`}>
-                {type === 'open' ? 'Recruiting' : type === 'ongoing' ? 'Live' : 'Completed'}
-              </Badge>
+              {getStatusIndicator(type)}
             </div>
           </CardHeader>
           <CardContent className="pt-2 pb-3 px-4">

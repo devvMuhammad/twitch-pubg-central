@@ -1,7 +1,11 @@
 
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Globe, Monitor, Gamepad2, Smartphone, User, Users, Clock, Twitch, MapPin } from "lucide-react";
+import { 
+  ArrowLeft, Globe, Monitor, Gamepad2, Smartphone, 
+  User, Users, Clock, Twitch, MapPin, 
+  CircleDot, UserRound, CircleDashed
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -14,11 +18,12 @@ type MatchMode = "Solo" | "Duo" | "Squad";
 type MatchMap = "Erangel" | "Miramar" | "Sanhok" | "Vikendi" | "Taego";
 type Platform = "PC" | "Xbox" | "PlayStation" | "Mobile";
 type Region = "North America" | "Europe" | "Asia" | "South America" | "Oceania";
+type GameStatus = "open" | "ongoing" | "completed";
 
 interface Player {
   id: string;
   name: string;
-  twitchName: string | null;
+  twitchName: string;
   avatarUrl: string;
 }
 
@@ -42,7 +47,7 @@ const Game = () => {
     region: Region;
     maxPlayers: number;
     currentPlayers: number;
-    status: "open" | "ongoing" | "completed";
+    status: GameStatus;
     timeCreated: string;
     host: {
       name: string;
@@ -81,11 +86,10 @@ const Game = () => {
       if (isFilled) {
         // Generate players for filled teams
         for (let j = 0; j < teamSize; j++) {
-          const hasTwitch = Math.random() > 0.4; // 60% chance of having Twitch
           teamPlayers.push({
             id: `player-${i}-${j}`,
             name: `Player${i}${j}`,
-            twitchName: hasTwitch ? `twitchPlayer${i}${j}` : null,
+            twitchName: `twitchPlayer${i}${j}`,
             avatarUrl: `https://i.pravatar.cc/150?img=${(i * teamSize + j) % 70}`
           });
         }
@@ -107,7 +111,7 @@ const Game = () => {
       region: ["North America", "Europe", "Asia", "South America", "Oceania"][parseInt(gameId) % 5] as Region,
       maxPlayers: mode === "Solo" ? 100 : mode === "Duo" ? 100 : 100,
       currentPlayers: Math.floor(Math.random() * (mode === "Solo" ? 100 : mode === "Duo" ? 100 : 100)),
-      status: ["open", "ongoing", "completed"][parseInt(gameId) % 3] as "open" | "ongoing" | "completed",
+      status: ["open", "ongoing", "completed"][parseInt(gameId) % 3] as GameStatus,
       timeCreated: "30 minutes ago",
       host: {
         name: "HostPlayer123",
@@ -129,6 +133,34 @@ const Game = () => {
         return <Smartphone className="h-4 w-4" />;
       default:
         return <Gamepad2 className="h-4 w-4" />;
+    }
+  };
+
+  const getStatusIndicator = (status: GameStatus) => {
+    switch (status) {
+      case 'open':
+        return (
+          <div className="flex items-center gap-1.5">
+            <CircleDot className="h-3 w-3 text-yellow-400 fill-yellow-400" />
+            <span className="text-yellow-400 font-medium">Recruiting</span>
+          </div>
+        );
+      case 'ongoing':
+        return (
+          <div className="flex items-center gap-1.5">
+            <CircleDot className="h-3 w-3 text-green-400 fill-green-400" />
+            <span className="text-green-400 font-medium">Live</span>
+          </div>
+        );
+      case 'completed':
+        return (
+          <div className="flex items-center gap-1.5">
+            <CircleDot className="h-3 w-3 text-red-400 fill-red-400" />
+            <span className="text-red-400 font-medium">Completed</span>
+          </div>
+        );
+      default:
+        return null;
     }
   };
 
@@ -159,87 +191,101 @@ const Game = () => {
           </Link>
           <div className="flex justify-between items-center">
             <h1 className="text-2xl md:text-3xl font-bold">{gameData.name}</h1>
-            <Badge 
-              variant={gameData.status === 'open' ? 'default' : gameData.status === 'ongoing' ? 'secondary' : 'outline'}
-              className={`${gameData.status === 'open' ? 'bg-pubg' : gameData.status === 'ongoing' ? 'bg-accent' : 'border-pubg text-pubg'}`}
-            >
-              {gameData.status === 'open' ? 'Recruiting' : gameData.status === 'ongoing' ? 'Live' : 'Completed'}
-            </Badge>
+            {getStatusIndicator(gameData.status)}
           </div>
         </div>
 
         {/* Game info and host section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          {/* Host details card */}
-          <Card className="border-pubg/20 bg-gaming-light">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base text-white">Host</CardTitle>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Match details card */}
+          <Card className="border-pubg/20 bg-gaming-light md:col-span-2 hover:border-pubg/40 transition-colors">
+            <CardHeader className="pb-2 border-b border-gaming-darker/30">
+              <CardTitle className="text-base text-white flex items-center gap-2">
+                <Globe className="h-5 w-5 text-pubg" />
+                Match Overview
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12 border-2 border-pubg">
-                  <AvatarImage src={gameData.host.avatarUrl} alt={gameData.host.name} />
-                  <AvatarFallback className="bg-pubg text-white">{gameData.host.name.substring(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium text-white">{gameData.host.name}</p>
-                  <p className="text-xs text-gray-400">{gameData.host.rank} Rank</p>
+            <CardContent className="pt-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-gaming-darker/30 p-3 rounded-md">
+                  <p className="text-xs text-gray-400 mb-1">Game Mode</p>
+                  <div className="flex items-center gap-1.5">
+                    <Users className="h-4 w-4 text-pubg" />
+                    <p className="text-white font-medium">{gameData.mode}</p>
+                  </div>
+                </div>
+
+                <div className="bg-gaming-darker/30 p-3 rounded-md">
+                  <p className="text-xs text-gray-400 mb-1">Region</p>
+                  <div className="flex items-center gap-1.5">
+                    <Globe className="h-4 w-4 text-pubg" />
+                    <p className="text-white font-medium">{gameData.region}</p>
+                  </div>
+                </div>
+
+                <div className="bg-gaming-darker/30 p-3 rounded-md">
+                  <p className="text-xs text-gray-400 mb-1">Platform</p>
+                  <div className="flex items-center gap-1.5">
+                    {getPlatformIcon(gameData.platform)}
+                    <p className="text-white font-medium">{gameData.platform}</p>
+                  </div>
+                </div>
+
+                <div className="bg-gaming-darker/30 p-3 rounded-md">
+                  <p className="text-xs text-gray-400 mb-1">Map</p>
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-pubg" />
+                    <p className="text-white font-medium">{gameData.map}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 bg-gaming-darker/20 p-3 rounded-md">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <User className="h-4 w-4 text-pubg" />
+                    <p className="text-sm text-white">{gameData.currentPlayers}/{gameData.maxPlayers} Players</p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="h-4 w-4 text-pubg" />
+                    <p className="text-sm text-white">Created {gameData.timeCreated}</p>
+                  </div>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Match details card */}
-          <Card className="border-pubg/20 bg-gaming-light md:col-span-2">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base text-white">Match Details</CardTitle>
+          {/* Host details card */}
+          <Card className="border-pubg/20 bg-gaming-light hover:border-pubg/40 transition-colors">
+            <CardHeader className="pb-2 border-b border-gaming-darker/30">
+              <CardTitle className="text-base text-white flex items-center gap-2">
+                <UserRound className="h-5 w-5 text-pubg" />
+                Host Details
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <p className="text-xs text-gray-400">Game Mode</p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <Users className="h-4 w-4 text-pubg" />
-                    <p className="text-white">{gameData.mode}</p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-400">Region</p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <Globe className="h-4 w-4 text-pubg" />
-                    <p className="text-white">{gameData.region}</p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-400">Platform</p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    {getPlatformIcon(gameData.platform)}
-                    <p className="text-white">{gameData.platform}</p>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-400">Map</p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <MapPin className="h-4 w-4 text-pubg" />
-                    <p className="text-white">{gameData.map}</p>
+            <CardContent className="p-0">
+              <div className="p-4 bg-gaming-darker/10">
+                <div className="flex flex-col items-center gap-4">
+                  <Avatar className="h-16 w-16 border-2 border-pubg">
+                    <AvatarImage src={gameData.host.avatarUrl} alt={gameData.host.name} />
+                    <AvatarFallback className="bg-pubg text-white">{gameData.host.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div className="text-center">
+                    <p className="font-bold text-lg text-white">{gameData.host.name}</p>
+                    <Badge variant="outline" className="mt-1 bg-gaming-darker/40 border-pubg/40 text-pubg">
+                      {gameData.host.rank} Rank
+                    </Badge>
                   </div>
                 </div>
               </div>
-
-              <Separator className="my-3 bg-gaming-darker/50" />
-
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-1.5">
-                  <User className="h-4 w-4 text-pubg" />
-                  <p className="text-sm text-white">{gameData.currentPlayers}/{gameData.maxPlayers} Players</p>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Clock className="h-4 w-4 text-pubg" />
-                  <p className="text-sm text-white">Created {gameData.timeCreated}</p>
-                </div>
+              <div className="p-4 bg-gradient-to-b from-transparent to-pubg/5">
+                <Button 
+                  variant="default" 
+                  className="w-full bg-pubg hover:bg-pubg-dark text-white"
+                >
+                  <Twitch className="h-4 w-4 mr-2" />
+                  View Host Profile
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -286,8 +332,9 @@ const TeamCard = ({ team, mode, teamNumber }: { team: Team; mode: MatchMode; tea
             ))}
           </div>
         ) : (
-          <div className="p-4 text-center text-xs text-gray-400">
-            Waiting for players...
+          <div className="p-4 flex flex-col items-center justify-center space-y-2 text-center">
+            <CircleDashed className="h-6 w-6 text-gray-500 animate-pulse" />
+            <p className="text-xs text-gray-400">Waiting for players</p>
           </div>
         )}
       </CardContent>
@@ -302,70 +349,60 @@ const PlayerCard = ({ player }: { player: Player }) => {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <div className={`p-2 ${hasTwitch ? 'bg-gaming-light cursor-pointer hover:bg-pubg/10 transition-colors' : 'bg-gaming-light'}`}>
-          {hasTwitch ? (
-            <a 
-              href={`https://twitch.tv/${player.twitchName}`} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="block"
-            >
-              <PlayerCardContent player={player} />
-            </a>
-          ) : (
+        <div className="p-2 bg-gaming-light cursor-pointer hover:bg-pubg/10 transition-colors">
+          <a 
+            href={`https://twitch.tv/${player.twitchName}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block"
+          >
             <PlayerCardContent player={player} />
-          )}
+          </a>
         </div>
       </HoverCardTrigger>
-      {hasTwitch && (
-        <HoverCardContent className="w-80 bg-gaming-darker border-pubg/20 p-0 overflow-hidden">
-          <div className="p-4">
-            <div className="flex items-center gap-3 mb-2">
-              <Avatar className="h-10 w-10 border-2 border-pubg">
-                <AvatarImage src={player.avatarUrl} alt={player.name} />
-                <AvatarFallback className="bg-pubg text-white">{player.name.substring(0, 2).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-medium text-white">{player.name}</p>
-                <p className="text-xs text-purple-300 flex items-center gap-1">
-                  <Twitch className="h-3 w-3" />
-                  {player.twitchName}
-                </p>
-              </div>
+      <HoverCardContent className="w-80 bg-gaming-darker border-pubg/20 p-0 overflow-hidden">
+        <div className="p-4">
+          <div className="flex items-center gap-3 mb-2">
+            <Avatar className="h-10 w-10 border-2 border-pubg">
+              <AvatarImage src={player.avatarUrl} alt={player.name} />
+              <AvatarFallback className="bg-pubg text-white">{player.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-medium text-white">{player.name}</p>
+              <p className="text-xs text-purple-300 flex items-center gap-1">
+                <Twitch className="h-3 w-3" />
+                {player.twitchName}
+              </p>
             </div>
-            <Button 
-              variant="default" 
-              className="w-full bg-[#9146FF] hover:bg-[#7E69AB] text-white"
-              onClick={() => window.open(`https://twitch.tv/${player.twitchName}`, '_blank')}
-            >
-              <Twitch className="h-4 w-4 mr-2" />
-              Watch Stream
-            </Button>
           </div>
-        </HoverCardContent>
-      )}
+          <Button 
+            variant="default" 
+            className="w-full bg-[#9146FF] hover:bg-[#7E69AB] text-white"
+            onClick={() => window.open(`https://twitch.tv/${player.twitchName}`, '_blank')}
+          >
+            <Twitch className="h-4 w-4 mr-2" />
+            Watch Stream
+          </Button>
+        </div>
+      </HoverCardContent>
     </HoverCard>
   );
 };
 
 // Reusable component for player card content
 const PlayerCardContent = ({ player }: { player: Player }) => {
-  const hasTwitch = !!player.twitchName;
-  
   return (
     <div className="flex items-center gap-2">
-      <Avatar className={`h-6 w-6 ${hasTwitch ? 'border border-purple-400' : ''}`}>
+      <Avatar className="h-6 w-6 border border-purple-400">
         <AvatarImage src={player.avatarUrl} alt={player.name} />
         <AvatarFallback className="text-[10px]">{player.name.substring(0, 2).toUpperCase()}</AvatarFallback>
       </Avatar>
       <div className="overflow-hidden">
         <p className="text-xs text-white truncate">{player.name}</p>
-        {hasTwitch && (
-          <p className="text-[10px] text-purple-300 flex items-center gap-0.5 truncate">
-            <Twitch className="h-2.5 w-2.5" />
-            {player.twitchName}
-          </p>
-        )}
+        <p className="text-[10px] text-purple-300 flex items-center gap-0.5 truncate">
+          <Twitch className="h-2.5 w-2.5" />
+          {player.twitchName}
+        </p>
       </div>
     </div>
   );
