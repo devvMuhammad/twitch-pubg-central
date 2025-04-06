@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 import { Globe, Users, User, Monitor, Gamepad2, Smartphone, Trophy, Clock, Timer } from "lucide-react";
 
 const Lobby = () => {
@@ -140,85 +141,87 @@ const Lobby = () => {
   // Match card component
   const MatchCard = ({ match, type }: { match: any, type: string }) => {
     return (
-      <Card className="mb-3 border-pubg/10 bg-gaming-light hover:border-pubg/30 transition-all shadow-sm">
-        <CardHeader className="pb-0 pt-3 px-4">
-          <div className="flex justify-between items-start">
-            <CardTitle className="text-base text-white">{match.name}</CardTitle>
-            <Badge variant={type === 'open' ? 'default' : type === 'ongoing' ? 'secondary' : 'outline'} className={`text-xs ${type === 'open' ? 'bg-pubg' : type === 'ongoing' ? 'bg-accent' : 'border-pubg text-pubg'}`}>
-              {type === 'open' ? 'Recruiting' : type === 'ongoing' ? 'Live' : 'Completed'}
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-2 pb-3 px-4">
-          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
-            <div className="w-full flex flex-row justify-between items-center mb-1">
-              <div className="flex items-center text-gray-300">
-                <Users className="h-3.5 w-3.5 mr-1.5 text-pubg" />
-                <span>{match.playersJoined}/{match.maxPlayers}</span>
+      <Link to={`/game/${match.id}`} className="block">
+        <Card className="mb-3 border-pubg/10 bg-gaming-light hover:border-pubg/30 transition-all shadow-sm">
+          <CardHeader className="pb-0 pt-3 px-4">
+            <div className="flex justify-between items-start">
+              <CardTitle className="text-base text-white">{match.name}</CardTitle>
+              <Badge variant={type === 'open' ? 'default' : type === 'ongoing' ? 'secondary' : 'outline'} className={`text-xs ${type === 'open' ? 'bg-pubg' : type === 'ongoing' ? 'bg-accent' : 'border-pubg text-pubg'}`}>
+                {type === 'open' ? 'Recruiting' : type === 'ongoing' ? 'Live' : 'Completed'}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-2 pb-3 px-4">
+            <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
+              <div className="w-full flex flex-row justify-between items-center mb-1">
+                <div className="flex items-center text-gray-300">
+                  <Users className="h-3.5 w-3.5 mr-1.5 text-pubg" />
+                  <span>{match.playersJoined}/{match.maxPlayers}</span>
+                </div>
+                
+                <div className="flex items-center text-gray-300">
+                  <User className="h-3.5 w-3.5 mr-1.5 text-pubg" />
+                  <span>{match.hostedBy}</span>
+                </div>
               </div>
               
               <div className="flex items-center text-gray-300">
-                <User className="h-3.5 w-3.5 mr-1.5 text-pubg" />
-                <span>{match.hostedBy}</span>
+                <Globe className="h-3.5 w-3.5 mr-1.5 text-pubg" />
+                <span>{match.region}</span>
+              </div>
+              
+              <div className="flex items-center text-gray-300">
+                {getPlatformIcon(match.platform)}
+                <span className="ml-1.5">{match.platform}</span>
               </div>
             </div>
-            
-            <div className="flex items-center text-gray-300">
-              <Globe className="h-3.5 w-3.5 mr-1.5 text-pubg" />
-              <span>{match.region}</span>
-            </div>
-            
-            <div className="flex items-center text-gray-300">
-              {getPlatformIcon(match.platform)}
-              <span className="ml-1.5">{match.platform}</span>
-            </div>
-          </div>
 
-          <Separator className="my-2 bg-gaming-darker/50" />
-          
-          <div className="grid grid-cols-3 gap-1 mt-1">
-            <div className="text-xs">
-              <div className="text-gray-400 text-[10px]">Map</div>
-              <div className="text-white">{match.mapName}</div>
-            </div>
+            <Separator className="my-2 bg-gaming-darker/50" />
             
-            <div className="text-xs">
-              <div className="text-gray-400 text-[10px]">Mode</div>
-              <div className="text-white">{match.gameMode}</div>
-            </div>
-            
-            <div className="text-xs">
-              {type === 'open' && (
-                <>
-                  <div className="text-gray-400 text-[10px]">Created</div>
-                  <div className="text-white">{match.timeCreated}</div>
-                </>
-              )}
-              {type === 'ongoing' && (
-                <>
-                  <div className="text-gray-400 text-[10px]">Alive</div>
-                  <div className="text-white">{match.playersAlive}</div>
-                </>
-              )}
-              {type === 'completed' && (
-                <>
-                  <div className="text-gray-400 text-[10px]">Placement</div>
-                  <div className="text-white">{match.placement}</div>
-                </>
-              )}
-            </div>
-          </div>
-          
-          {type === 'completed' && (
-            <div className="mt-2 p-1.5 bg-gaming-darker/70 rounded text-xs">
-              <div className="flex justify-between items-center">
-                <span className="text-pubg font-medium">Winner: {match.winner}</span>
-                <span className="text-white">{match.kills} Kills</span>
+            <div className="grid grid-cols-3 gap-1 mt-1">
+              <div className="text-xs">
+                <div className="text-gray-400 text-[10px]">Map</div>
+                <div className="text-white">{match.mapName}</div>
+              </div>
+              
+              <div className="text-xs">
+                <div className="text-gray-400 text-[10px]">Mode</div>
+                <div className="text-white">{match.gameMode}</div>
+              </div>
+              
+              <div className="text-xs">
+                {type === 'open' && (
+                  <>
+                    <div className="text-gray-400 text-[10px]">Created</div>
+                    <div className="text-white">{match.timeCreated}</div>
+                  </>
+                )}
+                {type === 'ongoing' && (
+                  <>
+                    <div className="text-gray-400 text-[10px]">Alive</div>
+                    <div className="text-white">{match.playersAlive}</div>
+                  </>
+                )}
+                {type === 'completed' && (
+                  <>
+                    <div className="text-gray-400 text-[10px]">Placement</div>
+                    <div className="text-white">{match.placement}</div>
+                  </>
+                )}
               </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
+            
+            {type === 'completed' && (
+              <div className="mt-2 p-1.5 bg-gaming-darker/70 rounded text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-pubg font-medium">Winner: {match.winner}</span>
+                  <span className="text-white">{match.kills} Kills</span>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </Link>
     );
   };
 
