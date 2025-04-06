@@ -1,37 +1,31 @@
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/hooks/use-toast";
-import { Twitch, Xbox, ArrowDown } from "lucide-react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Gamepad2, Monitor, Smartphone, Twitch } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-  pubgUsername: z.string()
-    .min(3, "Username must be at least 3 characters")
-    .max(30, "Username cannot exceed 30 characters"),
-  platform: z.enum(["pc", "xbox", "ps4"], {
-    required_error: "Please select a gaming platform",
+  pubgUsername: z.string().min(3, "Username must be at least 3 characters"),
+  platform: z.enum(["pc", "xbox", "playstation", "mobile"], {
+    required_error: "Please select a platform",
   }),
-  twitchUsername: z.string()
-    .min(3, "Twitch username must be at least 3 characters")
-    .max(25, "Twitch username cannot exceed 25 characters")
-    .optional()
-    .or(z.literal(''))
+  twitchUsername: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 const Onboarding = () => {
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const { toast } = useToast();
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,43 +34,42 @@ const Onboarding = () => {
       twitchUsername: "",
     },
   });
-
-  const onSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
+  
+  const onSubmit = async (values: FormValues) => {
+    setIsLoading(true);
     
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log("Form submitted:", data);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log("Form submitted:", values);
       
       toast({
-        title: "Profile created!",
-        description: "Your PUBG profile has been successfully set up.",
-        variant: "default",
+        title: "Profile updated!",
+        description: "Your PUBG profile has been set up.",
       });
       
-      // Navigate to the dashboard or home page after successful submission
+      // Redirect to lobby or dashboard after successful onboarding
       setTimeout(() => {
-        navigate("/");
-      }, 1500);
+        navigate("/lobby");
+      }, 1000);
     } catch (error) {
-      console.error("Submission error:", error);
+      console.error("Onboarding failed:", error);
       toast({
         title: "Something went wrong",
-        description: "There was an issue setting up your profile. Please try again.",
+        description: "There was a problem setting up your profile.",
         variant: "destructive",
       });
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
-
+  
   return (
-    <div className="min-h-screen bg-gaming-darker flex flex-col items-center pt-20 px-4">
-      <div className="w-full max-w-md bg-gaming-light border border-pubg/20 rounded-xl p-8 shadow-lg">
+    <div className="min-h-screen bg-gaming-darker flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white">Set Up Your Profile</h1>
-          <p className="text-gray-400 mt-2">Help us personalize your experience</p>
+          <p className="text-gray-400 mt-2">Tell us about your PUBG experience</p>
         </div>
         
         <Form {...form}>
@@ -88,11 +81,16 @@ const Onboarding = () => {
                 <FormItem>
                   <FormLabel className="text-white">PUBG Username</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Enter your PUBG username" 
-                      {...field} 
-                      className="bg-gaming-darker border-pubg/30 text-white"
-                    />
+                    <div className="relative">
+                      <Input 
+                        placeholder="Enter your PUBG username" 
+                        {...field} 
+                        className="bg-gaming-light border-pubg/30 text-white pl-10"
+                      />
+                      <div className="absolute left-3 top-3 text-pubg">
+                        <Gamepad2 className="h-4 w-4" />
+                      </div>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,40 +107,47 @@ const Onboarding = () => {
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="flex flex-col space-y-1"
+                      className="grid grid-cols-2 gap-4"
                     >
-                      <div className="flex items-center space-x-2 rounded-md border border-pubg/30 p-3 bg-gaming-darker">
-                        <RadioGroupItem value="pc" id="pc" />
-                        <label htmlFor="pc" className="flex flex-1 cursor-pointer items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <ArrowDown className="h-5 w-5 text-pubg" />
-                            <span className="text-white">PC / Steam</span>
-                          </div>
-                        </label>
-                      </div>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="pc" className="text-pubg border-pubg" />
+                        </FormControl>
+                        <FormLabel className="text-white font-normal flex items-center">
+                          <Monitor className="h-4 w-4 mr-2 text-pubg" />
+                          PC
+                        </FormLabel>
+                      </FormItem>
                       
-                      <div className="flex items-center space-x-2 rounded-md border border-pubg/30 p-3 bg-gaming-darker">
-                        <RadioGroupItem value="xbox" id="xbox" />
-                        <label htmlFor="xbox" className="flex flex-1 cursor-pointer items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <Xbox className="h-5 w-5 text-pubg" />
-                            <span className="text-white">Xbox</span>
-                          </div>
-                        </label>
-                      </div>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="xbox" className="text-pubg border-pubg" />
+                        </FormControl>
+                        <FormLabel className="text-white font-normal flex items-center">
+                          <Gamepad2 className="h-4 w-4 mr-2 text-pubg" />
+                          Xbox
+                        </FormLabel>
+                      </FormItem>
                       
-                      <div className="flex items-center space-x-2 rounded-md border border-pubg/30 p-3 bg-gaming-darker">
-                        <RadioGroupItem value="ps4" id="ps4" />
-                        <label htmlFor="ps4" className="flex flex-1 cursor-pointer items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            {/* Using a different icon since PS4 is not available in lucide */}
-                            <svg className="h-5 w-5 text-pubg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M9.5 7v9.5m0 0c0 1.1-.9 2-2 2h-3a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h3c1.1 0 2 .9 2 2v9Zm11-9h-3a2 2 0 0 0-2 2v9c0 1.1.9 2 2 2h3a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                            <span className="text-white">PlayStation</span>
-                          </div>
-                        </label>
-                      </div>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="playstation" className="text-pubg border-pubg" />
+                        </FormControl>
+                        <FormLabel className="text-white font-normal flex items-center">
+                          <Gamepad2 className="h-4 w-4 mr-2 text-pubg" />
+                          PlayStation
+                        </FormLabel>
+                      </FormItem>
+                      
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="mobile" className="text-pubg border-pubg" />
+                        </FormControl>
+                        <FormLabel className="text-white font-normal flex items-center">
+                          <Smartphone className="h-4 w-4 mr-2 text-pubg" />
+                          Mobile
+                        </FormLabel>
+                      </FormItem>
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />
@@ -155,18 +160,18 @@ const Onboarding = () => {
               name="twitchUsername"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-white">
-                    <div className="flex items-center gap-2">
-                      <Twitch className="h-4 w-4 text-pubg" />
-                      <span>Twitch Username (Optional)</span>
-                    </div>
-                  </FormLabel>
+                  <FormLabel className="text-white">Twitch Username (Optional)</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Enter your Twitch username" 
-                      {...field} 
-                      className="bg-gaming-darker border-pubg/30 text-white"
-                    />
+                    <div className="relative">
+                      <Input 
+                        placeholder="Your Twitch username" 
+                        {...field} 
+                        className="bg-gaming-light border-pubg/30 text-white pl-10"
+                      />
+                      <div className="absolute left-3 top-3 text-pubg">
+                        <Twitch className="h-4 w-4" />
+                      </div>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,10 +180,10 @@ const Onboarding = () => {
             
             <Button 
               type="submit" 
-              className="w-full glow-button"
-              disabled={isSubmitting}
+              className="w-full bg-pubg hover:bg-pubg-dark text-white"
+              disabled={isLoading}
             >
-              {isSubmitting ? "Setting Up..." : "Complete Setup"}
+              {isLoading ? "Setting Up Profile..." : "Complete Profile Setup"}
             </Button>
           </form>
         </Form>

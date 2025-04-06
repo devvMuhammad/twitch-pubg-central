@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Twitch } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -14,11 +15,15 @@ const Header = () => {
           <a href="#features" className="text-sm text-gray-300 hover:text-white transition-colors">Features</a>
           <a href="#streams" className="text-sm text-gray-300 hover:text-white transition-colors">Streams</a>
           <a href="#rankings" className="text-sm text-gray-300 hover:text-white transition-colors">Rankings</a>
-          <a href="#community" className="text-sm text-gray-300 hover:text-white transition-colors">Community</a>
+          <Link to="/lobby" className="text-sm text-gray-300 hover:text-white transition-colors">Lobby</Link>
         </nav>
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" className="text-gray-300 hover:text-white">Login</Button>
-          <Button className="bg-pubg hover:bg-pubg-light text-white">Sign Up</Button>
+          <Link to="/login">
+            <Button variant="ghost" className="text-gray-300 hover:text-white">Login</Button>
+          </Link>
+          <Link to="/signup">
+            <Button className="bg-pubg hover:bg-pubg-light text-white">Sign Up</Button>
+          </Link>
         </div>
       </div>
     </header>
