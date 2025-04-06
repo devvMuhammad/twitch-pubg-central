@@ -140,65 +140,69 @@ const Lobby = () => {
   // Match card component
   const MatchCard = ({ match, type }: { match: any, type: string }) => {
     return (
-      <Card className="mb-4 border-pubg/20 bg-gaming-light hover:border-pubg/50 transition-all">
-        <CardHeader className="pb-2">
+      <Card className="mb-3 border-pubg/10 bg-gaming-light hover:border-pubg/30 transition-all shadow-sm">
+        <CardHeader className="pb-0 pt-3 px-4">
           <div className="flex justify-between items-start">
-            <CardTitle className="text-lg text-white">{match.name}</CardTitle>
-            <Badge variant={type === 'open' ? 'default' : type === 'ongoing' ? 'secondary' : 'outline'} className={type === 'open' ? 'bg-pubg' : type === 'ongoing' ? 'bg-accent' : 'border-pubg text-pubg'}>
+            <CardTitle className="text-base text-white">{match.name}</CardTitle>
+            <Badge variant={type === 'open' ? 'default' : type === 'ongoing' ? 'secondary' : 'outline'} className={`text-xs ${type === 'open' ? 'bg-pubg' : type === 'ongoing' ? 'bg-accent' : 'border-pubg text-pubg'}`}>
               {type === 'open' ? 'Recruiting' : type === 'ongoing' ? 'Live' : 'Completed'}
             </Badge>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center text-sm text-gray-300 mb-2">
-            <Users className="h-4 w-4 mr-2 text-pubg" />
-            <span>{match.playersJoined}/{match.maxPlayers} Players</span>
-          </div>
-          
-          <div className="flex items-center text-sm text-gray-300 mb-2">
-            <User className="h-4 w-4 mr-2 text-pubg" />
-            <span>Hosted by {match.hostedBy}</span>
-          </div>
-          
-          <div className="flex items-center text-sm text-gray-300 mb-2">
-            <Globe className="h-4 w-4 mr-2 text-pubg" />
-            <span>{match.region}</span>
-          </div>
-          
-          <div className="flex items-center text-sm text-gray-300 mb-2">
-            {getPlatformIcon(match.platform)}
-            <span className="ml-2">{match.platform}</span>
+        <CardContent className="pt-2 pb-3 px-4">
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs">
+            <div className="w-full flex flex-row justify-between items-center mb-1">
+              <div className="flex items-center text-gray-300">
+                <Users className="h-3.5 w-3.5 mr-1.5 text-pubg" />
+                <span>{match.playersJoined}/{match.maxPlayers}</span>
+              </div>
+              
+              <div className="flex items-center text-gray-300">
+                <User className="h-3.5 w-3.5 mr-1.5 text-pubg" />
+                <span>{match.hostedBy}</span>
+              </div>
+            </div>
+            
+            <div className="flex items-center text-gray-300">
+              <Globe className="h-3.5 w-3.5 mr-1.5 text-pubg" />
+              <span>{match.region}</span>
+            </div>
+            
+            <div className="flex items-center text-gray-300">
+              {getPlatformIcon(match.platform)}
+              <span className="ml-1.5">{match.platform}</span>
+            </div>
           </div>
 
-          <Separator className="my-3 bg-gaming-darker" />
+          <Separator className="my-2 bg-gaming-darker/50" />
           
-          <div className="grid grid-cols-3 gap-2 mt-2">
-            <div className="text-xs text-center">
-              <div className="text-gray-400">Map</div>
+          <div className="grid grid-cols-3 gap-1 mt-1">
+            <div className="text-xs">
+              <div className="text-gray-400 text-[10px]">Map</div>
               <div className="text-white">{match.mapName}</div>
             </div>
             
-            <div className="text-xs text-center">
-              <div className="text-gray-400">Mode</div>
+            <div className="text-xs">
+              <div className="text-gray-400 text-[10px]">Mode</div>
               <div className="text-white">{match.gameMode}</div>
             </div>
             
-            <div className="text-xs text-center">
+            <div className="text-xs">
               {type === 'open' && (
                 <>
-                  <div className="text-gray-400">Created</div>
+                  <div className="text-gray-400 text-[10px]">Created</div>
                   <div className="text-white">{match.timeCreated}</div>
                 </>
               )}
               {type === 'ongoing' && (
                 <>
-                  <div className="text-gray-400">Alive</div>
+                  <div className="text-gray-400 text-[10px]">Alive</div>
                   <div className="text-white">{match.playersAlive}</div>
                 </>
               )}
               {type === 'completed' && (
                 <>
-                  <div className="text-gray-400">Placement</div>
+                  <div className="text-gray-400 text-[10px]">Placement</div>
                   <div className="text-white">{match.placement}</div>
                 </>
               )}
@@ -206,7 +210,7 @@ const Lobby = () => {
           </div>
           
           {type === 'completed' && (
-            <div className="mt-3 p-2 bg-gaming-darker rounded-md text-sm">
+            <div className="mt-2 p-1.5 bg-gaming-darker/70 rounded text-xs">
               <div className="flex justify-between items-center">
                 <span className="text-pubg font-medium">Winner: {match.winner}</span>
                 <span className="text-white">{match.kills} Kills</span>
@@ -227,75 +231,90 @@ const Lobby = () => {
           {/* Left column - Match lists */}
           <div className="w-full md:w-3/4">
             <Tabs defaultValue="open" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="w-full grid grid-cols-3 mb-6 bg-gaming-light">
-                <TabsTrigger value="open" className="data-[state=active]:bg-pubg data-[state=active]:text-white">
+              <TabsList className="w-full grid grid-cols-3 mb-4 bg-transparent border-b border-gaming-light">
+                <TabsTrigger 
+                  value="open" 
+                  className="bg-transparent rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-pubg data-[state=active]:text-white text-gray-400"
+                >
                   <Clock className="h-4 w-4 mr-2" />
                   Open Matches
                 </TabsTrigger>
-                <TabsTrigger value="ongoing" className="data-[state=active]:bg-pubg data-[state=active]:text-white">
+                <TabsTrigger 
+                  value="ongoing" 
+                  className="bg-transparent rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-pubg data-[state=active]:text-white text-gray-400"
+                >
                   <Timer className="h-4 w-4 mr-2" />
-                  Ongoing Matches
+                  Live Matches
                 </TabsTrigger>
-                <TabsTrigger value="completed" className="data-[state=active]:bg-pubg data-[state=active]:text-white">
+                <TabsTrigger 
+                  value="completed" 
+                  className="bg-transparent rounded-none border-b-2 border-transparent px-4 py-2 data-[state=active]:border-pubg data-[state=active]:text-white text-gray-400"
+                >
                   <Trophy className="h-4 w-4 mr-2" />
-                  Completed Matches
+                  Completed
                 </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="open" className="space-y-4">
-                {openMatches.map(match => (
-                  <MatchCard key={match.id} match={match} type="open" />
-                ))}
+              <TabsContent value="open" className="space-y-4 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {openMatches.map(match => (
+                    <MatchCard key={match.id} match={match} type="open" />
+                  ))}
+                </div>
               </TabsContent>
               
-              <TabsContent value="ongoing" className="space-y-4">
-                {ongoingMatches.map(match => (
-                  <MatchCard key={match.id} match={match} type="ongoing" />
-                ))}
+              <TabsContent value="ongoing" className="space-y-4 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {ongoingMatches.map(match => (
+                    <MatchCard key={match.id} match={match} type="ongoing" />
+                  ))}
+                </div>
               </TabsContent>
               
-              <TabsContent value="completed" className="space-y-4">
-                {completedMatches.map(match => (
-                  <MatchCard key={match.id} match={match} type="completed" />
-                ))}
+              <TabsContent value="completed" className="space-y-4 mt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {completedMatches.map(match => (
+                    <MatchCard key={match.id} match={match} type="completed" />
+                  ))}
+                </div>
               </TabsContent>
             </Tabs>
           </div>
           
           {/* Right column - Player stats card */}
           <div className="w-full md:w-1/4 mt-6 md:mt-0">
-            <Card className="border-pubg/20 bg-gaming-light">
+            <Card className="border-pubg/20 bg-gaming-light sticky top-24">
               <CardHeader className="pb-0">
                 <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16 border-2 border-pubg">
+                  <Avatar className="h-14 w-14 border-2 border-pubg">
                     <AvatarImage src={playerStats.avatarUrl} alt={playerStats.name} />
                     <AvatarFallback className="bg-pubg text-white">{playerStats.name.substring(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <CardTitle className="text-xl text-white">{playerStats.name}</CardTitle>
-                    <p className="text-gray-400 text-sm">Pro Player</p>
+                    <CardTitle className="text-lg text-white">{playerStats.name}</CardTitle>
+                    <p className="text-gray-400 text-xs">Pro Player</p>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
+              <CardContent className="pt-5">
+                <div className="space-y-3">
                   <div className="text-center">
-                    <p className="text-gray-400 text-sm">Matches Played</p>
-                    <p className="text-2xl font-bold text-white">{playerStats.matchesPlayed}</p>
+                    <p className="text-gray-400 text-xs">Matches Played</p>
+                    <p className="text-xl font-bold text-white">{playerStats.matchesPlayed}</p>
                   </div>
                   
                   <Separator className="bg-gaming-darker" />
                   
                   <div className="text-center">
-                    <p className="text-gray-400 text-sm">Win Rate</p>
-                    <p className="text-2xl font-bold text-pubg">{playerStats.winRate}</p>
+                    <p className="text-gray-400 text-xs">Win Rate</p>
+                    <p className="text-xl font-bold text-pubg">{playerStats.winRate}</p>
                   </div>
                   
                   <Separator className="bg-gaming-darker" />
                   
                   <div className="text-center">
-                    <p className="text-gray-400 text-sm">Kills Per Match</p>
-                    <p className="text-2xl font-bold text-white">{playerStats.killsPerMatch}</p>
+                    <p className="text-gray-400 text-xs">Kills Per Match</p>
+                    <p className="text-xl font-bold text-white">{playerStats.killsPerMatch}</p>
                   </div>
                 </div>
               </CardContent>
