@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,9 +5,10 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { 
   Globe, Users, User, Monitor, Gamepad2, Smartphone, 
-  Trophy, Clock, Timer, CircleDot
+  Trophy, Clock, Timer, CircleDot, PlusCircle
 } from "lucide-react";
 
 const Lobby = () => {
@@ -258,7 +258,15 @@ const Lobby = () => {
   return (
     <div className="min-h-screen bg-gaming-darker text-white pt-20 pb-12">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-6">Game Lobby</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold">Game Lobby</h1>
+          <Link to="/host-game">
+            <Button className="bg-pubg hover:bg-pubg-light text-white font-medium flex items-center gap-2">
+              <PlusCircle className="h-4 w-4" />
+              Host Your Own Game
+            </Button>
+          </Link>
+        </div>
         
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left column - Match lists */}
